@@ -1,6 +1,7 @@
 # Crypto Payment System
 
-This project is a Crypto Payment System API built with FastAPI. It allows creates wallets for users to make transactions to, submit transactions, and monitor transaction statuses.
+This project is a Crypto Payment System API built with FastAPI and Etherscan API. It allows creates wallets for users to make transactions to, submit transactions, and monitor transaction statuses.
+It only supports Etherium at the moment.
 
 ## Features
 
