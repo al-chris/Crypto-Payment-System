@@ -1,5 +1,6 @@
 # app/main.py
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from .routers import payments, users
 from .database import engine, SQLModel
@@ -9,7 +10,36 @@ from slowapi.util import get_remote_address
 from fastapi.responses import JSONResponse
 import os
 
-app = FastAPI(title="Crypto Payment System")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Create database tables on startup
+    async with engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+    
+    try:
+        yield
+
+    finally:
+        # Shutdown: Close database connections
+        if engine is not None:
+            await engine.dispose()
+            print("Database connections closed.")
+            
+
+app = FastAPI(
+    title="Crypto Payment System",
+    description="API for processing and managing cryptocurrency payments. Handles transaction processing, wallet management, and payment status tracking.",
+    version="1.0.0",
+    lifespan=lifespan,
+    contact={
+        "name": "API Support",
+        "email": "chrisdev0000@gmail.com",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    }
+)
 
 # Initialize Routers
 app.include_router(users.router)
@@ -37,12 +67,6 @@ async def rate_limit_handler(request, exc):
         status_code=429,
         content={"detail": "Rate limit exceeded"},
     )
-
-@app.on_event("startup")
-async def on_startup():
-    # Create database tables
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
 
 @app.get("/")
 async def root():
