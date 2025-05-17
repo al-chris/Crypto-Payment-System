@@ -108,6 +108,7 @@ async def submit_transaction(
         transaction_hash=transaction.transaction_hash,
         currency=transaction.currency,
         status="pending",
+        amount=transaction.amount
     )
     try:
         new_transaction = await create_transaction(session, new_transaction)

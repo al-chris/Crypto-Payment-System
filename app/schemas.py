@@ -41,6 +41,7 @@ class TransactionSubmit(BaseModel):
     transaction_hash: str
     currency: str
     address: str
+    amount: float
 
 class TransactionRead(BaseModel):
     id: int
