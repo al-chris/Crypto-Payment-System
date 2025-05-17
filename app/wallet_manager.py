@@ -1,9 +1,10 @@
 # app/wallet_manager.py
 
-from bip_utils import Bip39SeedGenerator, Bip44, Bip44Coins, Bip44Changes
+from bip_utils import Bip39SeedGenerator, Bip44, Bip44Coins, Bip44Changes # type: ignore
 from web3 import Web3
 import os
 from dotenv import load_dotenv
+from typing import Any
 
 load_dotenv()
 
@@ -28,15 +29,15 @@ class WalletManager:
     def set_current_index(self, index: int):
         self.current_index = index
 
-    def generate_new_address(self) -> dict:
+    def generate_new_address(self) -> dict[str, Any]:
         """
         Generates a new Ethereum address using Bip44 standard.
         Returns a dictionary with address and private key.
         """
         # Derive the path m/44'/60'/0'/0/index
         bip44_addr = self.bip44_acc.AddressIndex(self.current_index)
-        address = bip44_addr.PublicKey().ToAddress()
-        private_key = bip44_addr.PrivateKey().Raw().ToHex()
+        address: str = bip44_addr.PublicKey().ToAddress()
+        private_key: str = bip44_addr.PrivateKey().Raw().ToHex()
         
         # Increment index for next address
         self.current_index += 1

@@ -1,0 +1,26 @@
+[project]
+name = "crypto-payment-system"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.15.2",
+    "asgiref>=3.8.1",
+    "asyncpg>=0.30.0",
+    "bip-utils>=2.9.3",
+    "celery[redis]>=5.5.2",
+    "cryptography>=44.0.3",
+    "fastapi>=0.115.12",
+    "httpx>=0.28.1",
+    "nest-asyncio>=1.6.0",
+    "passlib[bcrypt]>=1.7.4",
+    "pydantic[email]>=2.11.4",
+    "python-dotenv>=1.1.0",
+    "python-jose[cryptography]>=3.4.0",
+    "python-multipart>=0.0.20",
+    "slowapi>=0.1.9",
+    "sqlmodel>=0.0.24",
+    "uvicorn>=0.34.2",
+    "web3>=7.11.1",
+]

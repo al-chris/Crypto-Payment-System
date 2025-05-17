@@ -5,7 +5,6 @@ from sqlalchemy.exc import IntegrityError
 from typing import List
 from ..schemas import TransactionSubmit, TransactionRead, WalletRead
 from ..crud import (
-    get_user_by_email,
     create_wallet,
     get_wallet_by_address,
     get_wallets_by_user,
@@ -14,7 +13,7 @@ from ..crud import (
 )
 from ..models import User, Wallet, Transaction
 from ..dependencies import get_session, get_current_user
-from sqlmodel import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from ..wallet_manager import WalletManager
 from ..encryption import encrypt_data
 import os
@@ -23,7 +22,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize WalletManager
-from ..encryption import decrypt_data
+# from ..encryption import decrypt_data
 
 # For simplicity, initialize WalletManager here. In production, consider dependency injection.
 from ..wallet_manager import WalletManager
@@ -42,9 +41,9 @@ router = APIRouter(
 
 @router.post("/initiate", response_model=WalletRead)
 async def initiate_payment(
-    wallet_create: dict = {"currency": "ETH"},  # Default to ETH; adjust as needed
+    wallet_create: dict[str, str] = {"currency": "ETH"},  # Default to ETH; adjust as needed
     current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     currency = wallet_create.get("currency", "ETH")
     
@@ -76,7 +75,7 @@ async def initiate_payment(
 async def submit_transaction(
     transaction: TransactionSubmit,
     current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_session),
+    session: AsyncSession = Depends(get_session),
 ):
     # Retrieve all wallets for the user
     wallets = await get_wallets_by_user(session, current_user.id)
@@ -122,7 +121,7 @@ async def submit_transaction(
 async def get_transaction_status(
     transaction_id: int, 
     current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     transaction = await session.get(Transaction, transaction_id)
     if not transaction or transaction.user_id != current_user.id:
@@ -132,7 +131,7 @@ async def get_transaction_status(
 @router.get("/my-wallets", response_model=List[WalletRead])
 async def get_my_wallets(
     current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     wallets = await get_wallets_by_user(session, current_user.id)
     return wallets

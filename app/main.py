@@ -3,12 +3,12 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from .routers import payments, users
-from .database import engine, SQLModel
+from .database import engine
+from sqlmodel import SQLModel
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.util import get_remote_address
 from fastapi.responses import JSONResponse
-import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,7 +21,7 @@ async def lifespan(app: FastAPI):
 
     finally:
         # Shutdown: Close database connections
-        if engine is not None:
+        if engine:
             await engine.dispose()
             print("Database connections closed.")
             
@@ -55,19 +55,12 @@ app.add_middleware(
 )
 
 # Rate Limiting
-limiter = Limiter(key_func=get_remote_address)
-app.state.limiter = limiter
-app.add_exception_handler(429, _rate_limit_exceeded_handler)
-
-from slowapi.errors import RateLimitExceeded
-
-@app.exception_handler(RateLimitExceeded)
-async def rate_limit_handler(request, exc):
-    return JSONResponse(
-        status_code=429,
-        content={"detail": "Rate limit exceeded"},
-    )
+limiter = Limiter(
+    key_func=get_remote_address,
+    strategy="fixed-window",
+    storage_uri="redis://redis:6379/0"
+)
 
 @app.get("/")
-async def root():
-    return {"message": "Welcome to the Crypto Payment System API"}
+async def root() -> JSONResponse:
+    return JSONResponse({"message": "Welcome to the Crypto Payment System API"})

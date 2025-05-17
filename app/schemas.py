@@ -1,7 +1,7 @@
 # app/schemas.py
 
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 
 # --- User Schemas ---
@@ -40,6 +40,7 @@ class WalletRead(BaseModel):
 class TransactionSubmit(BaseModel):
     transaction_hash: str
     currency: str
+    address: str
 
 class TransactionRead(BaseModel):
     id: int
@@ -73,8 +74,27 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+    email: str = ""
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+# --- Forwarding Transaction Schemas ---
+
+class ForwardingTransactionRead(BaseModel):
+    id: int
+    user_wallet_id: int
+    tx_hash: str
+    amount: float
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class ForwardingTransactionCreate(BaseModel):
+    user_wallet_id: int
+    tx_hash: str
+    amount: float
