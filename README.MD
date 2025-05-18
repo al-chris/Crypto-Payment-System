@@ -18,6 +18,48 @@ It only supports Etherium at the moment.
 - Redis
 - Docker (for containerized deployment)
 
+---
+
+# Architecture Diagrams
+
+## Component Diagram
+
+![Component Diagram](docs/uml/component_diagram.svg)
+
+---
+
+## Sequence Diagrams
+
+### 1. User Registration
+
+![User Registration](docs/uml/user_registration.svg)
+
+---
+
+### 2. Wallet Creation
+
+![Wallet Creation](docs/uml/wallet_creation.svg)
+
+---
+
+### 3. Transaction Submission
+
+![Transaction Submission](docs/uml/transaction_submission.svg)
+
+---
+
+### 4. Transaction Monitoring (Celery Task)
+
+![Transaction Monitoring](docs/uml/transaction_monitoring.svg)
+
+---
+
+## Class Diagram
+
+![Class Diagram](docs/uml/class_diagram.svg)
+
+---
+
 ## Setup
 
 ### Environment Variables
