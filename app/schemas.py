@@ -1,5 +1,6 @@
 # app/schemas.py
 
+import uuid
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
@@ -12,7 +13,7 @@ class UserCreate(BaseModel):
     password: str  # Plain password for registration
 
 class UserRead(BaseModel):
-    id: int
+    id: uuid.UUID
     email: EmailStr
     name: str
     created_at: datetime
@@ -26,8 +27,8 @@ class WalletCreate(BaseModel):
     currency: str
 
 class WalletRead(BaseModel):
-    id: int
-    user_id: int
+    id: uuid.UUID
+    user_id: uuid.UUID
     address: str
     currency: str
     created_at: datetime
@@ -44,9 +45,9 @@ class TransactionSubmit(BaseModel):
     amount: float
 
 class TransactionRead(BaseModel):
-    id: int
-    user_id: int
-    wallet_id: int
+    id: uuid.UUID
+    user_id: uuid.UUID
+    wallet_id: uuid.UUID
     transaction_hash: str
     currency: str
     status: str
@@ -60,8 +61,8 @@ class TransactionRead(BaseModel):
 # --- Log Schemas ---
 
 class LogRead(BaseModel):
-    id: int
-    transaction_id: Optional[int]
+    id: uuid.UUID
+    transaction_id: Optional[uuid.UUID]
     message: str
     timestamp: datetime
 
@@ -84,8 +85,8 @@ class UserLogin(BaseModel):
 # --- Forwarding Transaction Schemas ---
 
 class ForwardingTransactionRead(BaseModel):
-    id: int
-    user_wallet_id: int
+    id: uuid.UUID
+    user_wallet_id: uuid.UUID
     tx_hash: str
     amount: float
     status: str
@@ -96,6 +97,6 @@ class ForwardingTransactionRead(BaseModel):
         from_attributes = True
 
 class ForwardingTransactionCreate(BaseModel):
-    user_wallet_id: int
+    user_wallet_id: uuid.UUID
     tx_hash: str
     amount: float

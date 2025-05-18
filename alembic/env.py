@@ -21,10 +21,10 @@ if config.config_file_name is not None:
 load_dotenv()
 
 # Set SQLAlchemy URL
-config.set_main_option('sqlalchemy.url', os.getenv("DATABASE_URL"))
+config.set_main_option('sqlalchemy.url', os.getenv("DATABASE_URL", ""))
 
 # Import models
-from app.models import User, Wallet, Transaction, Log
+from app.models import User, Wallet, Transaction, Log # type:ignore
 target_metadata = SQLModel.metadata
 
 # other values from the config, defined by the needs of env.py,
