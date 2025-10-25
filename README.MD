@@ -1,7 +1,7 @@
 # Crypto Payment System
 
 This project is a Crypto Payment System API built with FastAPI and Etherscan API. It allows creates wallets for users to make transactions to, submit transactions, and monitor transaction statuses.
-It only supports Etherium at the moment.
+It only supports Ethereum at the moment. The project uses uv for fast and reliable Python package management.
 
 ## Features
 
@@ -13,10 +13,11 @@ It only supports Etherium at the moment.
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.12+
 - PostgreSQL
 - Redis
 - Docker (for containerized deployment)
+- uv (Python package manager)
 
 ---
 
@@ -82,27 +83,33 @@ To run the project using Docker, use the following commands:
 docker compose up --build
 ```
 
-This will start the PostgreSQL, Redis, FastAPI, and Celery services.
+This will start the PostgreSQL, Redis, FastAPI, and Celery services. The application runs as a non-root user for security, and uses uv for fast Python package management.
 
 ### Manual Setup
 
-1. Install dependencies:
+1. Install uv (if not already installed):
 
 ```sh
-pip install -r requirements.txt
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-2. Run the FastAPI application:
+2. Install dependencies using uv:
 
 ```sh
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uv sync
 ```
 
-3. Start the Celery worker and beat:
+3. Run the FastAPI application:
 
 ```sh
-celery -A app.celery_app.celery worker --loglevel=info
-celery -A app.celery_app.celery beat --loglevel=info
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+4. Start the Celery worker and beat:
+
+```sh
+uv run celery -A app.celery_app.celery worker --loglevel=info
+uv run celery -A app.celery_app.celery beat --loglevel=info
 ```
 
 ## Usage

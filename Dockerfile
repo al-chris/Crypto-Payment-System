@@ -6,17 +6,32 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
+# Create a non-root user
+RUN useradd --create-home --shell /bin/bash app
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y build-essential
 
 # Copy requirements
 COPY requirements.txt .
 
+# Remove Windows-specific packages that aren't compatible with Linux
+RUN sed -i '/pywin32/d' requirements.txt
+
 # Install Python dependencies using uv
 RUN uv pip install --system --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
+
+# Remove any existing Celery beat schedule file to avoid permission issues
+RUN rm -f /app/celerybeat-schedule
+
+# Change ownership of the app directory to the app user
+RUN chown -R app:app /app
+
+# Switch to the non-root user
+USER app
 
 # Expose the port FastAPI is running on
 EXPOSE 8000
