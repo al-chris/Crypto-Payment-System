@@ -2,20 +2,18 @@
 
 FROM python:3.11-slim
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y build-essential curl
-
-# Install uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.local/bin:$PATH"
+RUN apt-get update && apt-get install -y build-essential
 
 # Copy requirements
 COPY requirements.txt .
 
 # Install Python dependencies using uv
-RUN uv pip install --no-cache-dir -r requirements.txt
+RUN uv pip install --system --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
