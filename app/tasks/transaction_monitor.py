@@ -1,7 +1,7 @@
 import os
 import asyncio
-import nest_asyncio # type: ignore
-from celery import Celery # type: ignore
+import nest_asyncio 
+from celery import Celery 
 from sqlmodel import select
 import httpx
 from web3 import Web3
@@ -43,9 +43,9 @@ celery = Celery(
     backend=os.getenv("CELERY_RESULT_BACKEND")
 )
 
-@celery.task() # type: ignore
+@celery.task()
 def monitor_transactions():
-    nest_asyncio.apply() # type: ignore
+    nest_asyncio.apply() 
     asyncio.run(_monitor_transactions_async())
 
 async def _monitor_transactions_async():

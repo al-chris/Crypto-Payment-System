@@ -79,7 +79,7 @@ ETHERSCAN_API_KEY=your_etherscan_api_key
 To run the project using Docker, use the following commands:
 
 ```sh
-docker-compose up --build
+docker compose up --build
 ```
 
 This will start the PostgreSQL, Redis, FastAPI, and Celery services.

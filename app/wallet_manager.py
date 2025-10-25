@@ -1,10 +1,10 @@
 # app/wallet_manager.py
 
-from bip_utils import Bip39SeedGenerator, Bip44, Bip44Coins, Bip44Changes # type: ignore
+from bip_utils import Bip39SeedGenerator, Bip44, Bip44Coins, Bip44Changes  # type: ignore
 from web3 import Web3
 import os
 from dotenv import load_dotenv
-from typing import Any
+from typing import Any, cast
 
 load_dotenv()
 
@@ -18,11 +18,11 @@ class WalletManager:
     def __init__(self, mnemonic: str):
         self.mnemonic = mnemonic
         # Generate seed from mnemonic
-        seed_bytes = Bip39SeedGenerator(self.mnemonic).Generate()
+        seed_bytes: Any = cast(Any, Bip39SeedGenerator(self.mnemonic)).Generate()
         # Initialize Bip44 for Ethereum
-        self.bip44_mst = Bip44.FromSeed(seed_bytes, Bip44Coins.ETHEREUM)
+        self.bip44_mst: Any = cast(Any, Bip44).FromSeed(seed_bytes, cast(Any, Bip44Coins).ETHEREUM)
         # Change 0 for external chain
-        self.bip44_acc = self.bip44_mst.Purpose().Coin().Account(0).Change(Bip44Changes.CHAIN_EXT)
+        self.bip44_acc: Any = self.bip44_mst.Purpose().Coin().Account(0).Change(cast(Any, Bip44Changes).CHAIN_EXT)
         # Initialize index based on existing wallets
         self.current_index = 0  # This should be set based on existing wallets
 
@@ -35,9 +35,9 @@ class WalletManager:
         Returns a dictionary with address and private key.
         """
         # Derive the path m/44'/60'/0'/0/index
-        bip44_addr = self.bip44_acc.AddressIndex(self.current_index)
-        address: str = bip44_addr.PublicKey().ToAddress()
-        private_key: str = bip44_addr.PrivateKey().Raw().ToHex()
+        bip44_addr: Any = self.bip44_acc.AddressIndex(self.current_index)
+        address: str = cast(str, bip44_addr.PublicKey().ToAddress())
+        private_key: str = cast(str, bip44_addr.PrivateKey().Raw().ToHex())
         
         # Increment index for next address
         self.current_index += 1
