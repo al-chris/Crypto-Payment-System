@@ -4,6 +4,7 @@ import uuid
 from pydantic import BaseModel, EmailStr, field_validator, ConfigDict
 from typing import Optional
 from datetime import datetime
+from decimal import Decimal
 
 # --- User Schemas ---
 
@@ -47,14 +48,14 @@ class TransactionSubmit(BaseModel):
     transaction_hash: str
     currency: str
     address: str
-    amount: float
+    amount: Decimal
 
 class TransactionRead(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID
     wallet_id: uuid.UUID
     transaction_hash: str
-    amount: float
+    amount: Decimal
     currency: str
     status: str
     confirmations: int
@@ -92,7 +93,7 @@ class ForwardingTransactionRead(BaseModel):
     id: uuid.UUID
     user_wallet_id: uuid.UUID
     tx_hash: str
-    amount: float
+    amount: Decimal
     status: str
     created_at: datetime
     updated_at: datetime
@@ -102,4 +103,4 @@ class ForwardingTransactionRead(BaseModel):
 class ForwardingTransactionCreate(BaseModel):
     user_wallet_id: uuid.UUID
     tx_hash: str
-    amount: float
+    amount: Decimal

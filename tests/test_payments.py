@@ -68,7 +68,7 @@ class TestPaymentSubmit:
         data = response.json()
         assert data["transaction_hash"] == transaction_data["transaction_hash"]
         assert data["currency"] == transaction_data["currency"]
-        assert data["amount"] == transaction_data["amount"]
+        assert float(data["amount"]) == transaction_data["amount"]
         assert data["status"] == "pending"
 
     async def test_submit_duplicate_transaction(self, client: AsyncClient, test_user_data: Dict[str, str], test_transaction_data: Dict[str, Any]) -> None:

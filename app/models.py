@@ -3,6 +3,8 @@ import uuid
 from sqlmodel import SQLModel, Field, Column, DateTime
 from datetime import datetime, timezone
 from typing import Optional
+from decimal import Decimal
+from sqlalchemy import DECIMAL
 
 class User(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, unique=True)
@@ -30,7 +32,7 @@ class Transaction(SQLModel, table=True):
     user_id: uuid.UUID = Field(foreign_key="user.id")
     wallet_id: uuid.UUID = Field(foreign_key="wallet.id")
     transaction_hash: str = Field(index=True, unique=True)
-    amount: float
+    amount: Decimal = Field(sa_column=Column(DECIMAL(18, 8)))
     currency: str
     status: str = Field(default="pending")  # pending, confirmed, failed
     confirmations: int = Field(default=0)
@@ -60,7 +62,7 @@ class ForwardingTransaction(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, unique=True)
     user_wallet_id: uuid.UUID = Field(foreign_key="wallet.id")
     tx_hash: str = Field(index=True, unique=True)
-    amount: float  # Amount in ETH or relevant currency
+    amount: Decimal = Field(sa_column=Column(DECIMAL(18, 8)))  # Amount in ETH or relevant currency
     status: str = Field(default="pending")  # pending, sent, failed
     created_at: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc), 

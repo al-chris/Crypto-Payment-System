@@ -8,6 +8,7 @@ from web3 import Web3
 from dotenv import load_dotenv
 from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession
+from decimal import Decimal
 
 from ..database import engine
 from ..models import Transaction, Wallet, Log, ForwardingTransaction
@@ -168,7 +169,7 @@ async def initiate_forwarding(session: AsyncSession, transaction: Transaction, w
     )
     await create_forwarding_transaction(session, ft)
 
-async def send_forwarding_transaction(private_key: str, amount: float) -> dict[str, Any]:
+async def send_forwarding_transaction(private_key: str, amount: Decimal) -> dict[str, Any]:
     """Sends ETH from the user's wallet to the organization's wallet."""
     account = w3.eth.account.from_key(private_key)
     nonce = w3.eth.get_transaction_count(account.address)
@@ -176,7 +177,7 @@ async def send_forwarding_transaction(private_key: str, amount: float) -> dict[s
     tx: dict[str, Any] = {
         'nonce': nonce,
         'to': ORG_WALLET_ADDRESS,
-        'value': w3.to_wei(amount, 'ether'),
+        'value': w3.to_wei(float(amount), 'ether'),
         'gas': 21000,
         'gasPrice': w3.eth.gas_price,  # Dynamic gas price
         'chainId': 1  # Mainnet

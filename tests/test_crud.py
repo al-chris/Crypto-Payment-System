@@ -8,6 +8,7 @@ from app.crud import (
     get_pending_transactions, update_transaction_status
 )
 from app.models import User, Wallet, Transaction
+from decimal import Decimal
 from app.auth import hash_password
 
 class TestUserCRUD:
@@ -152,7 +153,7 @@ class TestTransactionCRUD:
             user_id=user.id,
             wallet_id=wallet.id,
             transaction_hash="0xabcdef1234567890abcdef1234567890abcdef",
-            amount=2.5,
+            amount=Decimal("2.5"),
             currency="ETH",
             status="pending"
         )
@@ -160,7 +161,7 @@ class TestTransactionCRUD:
 
         assert created_transaction.id is not None
         assert created_transaction.transaction_hash == "0xabcdef1234567890abcdef1234567890abcdef"
-        assert created_transaction.amount == 2.5
+        assert created_transaction.amount == Decimal("2.5")
         assert created_transaction.status == "pending"
 
     async def test_get_transaction_by_hash(self, test_session: AsyncSession) -> None:
@@ -185,7 +186,7 @@ class TestTransactionCRUD:
             user_id=user.id,
             wallet_id=wallet.id,
             transaction_hash="0xgettest1234567890abcdef1234567890abcdef",
-            amount=1.0,
+            amount=Decimal("1.0"),
             currency="ETH",
             status="pending"
         )
@@ -195,7 +196,7 @@ class TestTransactionCRUD:
 
         assert retrieved_transaction is not None
         assert retrieved_transaction.transaction_hash == transaction.transaction_hash
-        assert retrieved_transaction.amount == 1.0
+        assert retrieved_transaction.amount == Decimal("1.0")
 
     async def test_get_pending_transactions(self, test_session: AsyncSession) -> None:
         """Test getting all pending transactions."""
@@ -220,7 +221,7 @@ class TestTransactionCRUD:
             user_id=user.id,
             wallet_id=wallet.id,
             transaction_hash="0xpending1234567890abcdef1234567890abcdef",
-            amount=1.0,
+            amount=Decimal("1.0"),
             currency="ETH",
             status="pending"
         )
@@ -228,7 +229,7 @@ class TestTransactionCRUD:
             user_id=user.id,
             wallet_id=wallet.id,
             transaction_hash="0xconfirmed1234567890abcdef1234567890abcdef",
-            amount=2.0,
+            amount=Decimal("2.0"),
             currency="ETH",
             status="confirmed"
         )
@@ -265,7 +266,7 @@ class TestTransactionCRUD:
             user_id=user.id,
             wallet_id=wallet.id,
             transaction_hash="0xupdatetest1234567890abcdef1234567890abcdef",
-            amount=1.5,
+            amount=Decimal("1.5"),
             currency="ETH",
             status="pending"
         )
