@@ -141,6 +141,7 @@ class TestGetTransaction:
 
         transaction_data = test_transaction_data.copy()
         transaction_data["address"] = wallet_data["address"]
+        transaction_data["transaction_hash"] = "0x987654321fedcba"  # Different hash
 
         submit_response = await client.post("/payments/submit", json=transaction_data, headers=headers)
         transaction = submit_response.json()
@@ -166,20 +167,25 @@ class TestGetTransaction:
         headers = {"Authorization": f"Bearer {token}"}
 
         # Try to get non-existent transaction
-        response = await client.get("/payments/transactions/99999", headers=headers)
+        response = await client.get("/payments/transactions/12345678-1234-5678-9012-123456789012", headers=headers)
 
         assert response.status_code == 404
         assert "Transaction not found" in response.json()["detail"]
 
 class TestGetWallets:
-    async def test_get_my_wallets_success(self, client: AsyncClient, test_user_data: Dict[str, str]) -> None:
+    async def test_get_my_wallets_success(self, client: AsyncClient) -> None:
         """Test getting user's wallets successfully."""
         # Register and login user
-        await client.post("/register", json=test_user_data)
+        wallet_user_data = {
+            "email": "wallet@example.com",
+            "name": "Wallet User",
+            "password": "testpassword123"
+        }
+        await client.post("/register", json=wallet_user_data)
 
         login_response = await client.post("/token", data={
-            "username": test_user_data["email"],
-            "password": test_user_data["password"]
+            "username": wallet_user_data["email"],
+            "password": wallet_user_data["password"]
         })
         token = login_response.json()["access_token"]
         headers = {"Authorization": f"Bearer {token}"}
@@ -197,14 +203,19 @@ class TestGetWallets:
         assert len(data) == 1
         assert data[0]["currency"] == "ETH"
 
-    async def test_get_my_wallets_empty(self, client: AsyncClient, test_user_data: Dict[str, str]) -> None:
+    async def test_get_my_wallets_empty(self, client: AsyncClient) -> None:
         """Test getting wallets when user has none."""
         # Register and login user
-        await client.post("/register", json=test_user_data)
+        empty_user_data = {
+            "email": "empty@example.com",
+            "name": "Empty User",
+            "password": "testpassword123"
+        }
+        await client.post("/register", json=empty_user_data)
 
         login_response = await client.post("/token", data={
-            "username": test_user_data["email"],
-            "password": test_user_data["password"]
+            "username": empty_user_data["email"],
+            "password": empty_user_data["password"]
         })
         token = login_response.json()["access_token"]
         headers = {"Authorization": f"Bearer {token}"}

@@ -54,11 +54,12 @@ class TransactionRead(BaseModel):
     user_id: uuid.UUID
     wallet_id: uuid.UUID
     transaction_hash: str
+    amount: float
     currency: str
     status: str
     confirmations: int
     created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime]
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -18,6 +18,9 @@ load_dotenv()
 # Test database URL - use in-memory SQLite for tests
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "sqlite+aiosqlite:///./test_crypto_payment.db")
 
+# Override DATABASE_URL for tests
+os.environ["DATABASE_URL"] = TEST_DATABASE_URL
+
 # Set test environment variables
 os.environ.setdefault("MNEMONIC", "test test test test test test test test test test test junk")
 os.environ.setdefault("FERNET_KEY", "test_fernet_key_12345678901234567890123456789012")

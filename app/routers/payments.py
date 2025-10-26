@@ -1,5 +1,6 @@
 # app/routers/payments.py
 
+import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 from typing import List
@@ -120,7 +121,7 @@ async def submit_transaction(
 
 @router.get("/transactions/{transaction_id}", response_model=TransactionRead)
 async def get_transaction_status(
-    transaction_id: int, 
+    transaction_id: uuid.UUID, 
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session)
 ):
