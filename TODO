@@ -3,3 +3,9 @@
 [ ] Add support for other chains
 [x] Write tests
 [x] Make async
+
+# Monitoring / infra improvements
+
+[ ] Resolve mixed async/sync in monitor task — The monitor currently mixes async DB and HTTP calls with blocking Web3 operations (for example: `w3.eth.get_transaction_count`, `w3.eth.send_raw_transaction`). Make Web3 interactions non-blocking by switching to an async Web3 provider or offloading blocking calls to a thread pool (e.g. `asyncio.to_thread`). Alternatively, extract the forwarding/signing logic into a separate background/worker task so the monitoring loop cannot be blocked by synchronous signing or network I/O.
+
+[ ] Mitigate Etherscan rate-limit risks — Polling Etherscan `txlist` per address every minute will hit API limits as addresses scale. Implement batching or caching (track last-checked block), adaptive polling/backoff on 429s, or consider event-driven alternatives (node websocket subscriptions or an event stream like Kafka) to reduce query volume and improve reliability.
