@@ -1,7 +1,7 @@
 # app/schemas.py
 
 import uuid
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -25,8 +25,7 @@ class UserRead(BaseModel):
     name: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Wallet Schemas ---
 
@@ -40,8 +39,7 @@ class WalletRead(BaseModel):
     currency: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Transaction Schemas ---
 
@@ -62,8 +60,7 @@ class TransactionRead(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Log Schemas ---
 
@@ -73,8 +70,7 @@ class LogRead(BaseModel):
     message: str
     timestamp: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # --- Authentication Schemas ---
 
@@ -100,8 +96,7 @@ class ForwardingTransactionRead(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ForwardingTransactionCreate(BaseModel):
     user_wallet_id: uuid.UUID

@@ -1,0 +1,171 @@
+Metadata-Version: 2.4
+Name: crypto-payment-system
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: alembic>=1.15.2
+Requires-Dist: asgiref>=3.8.1
+Requires-Dist: asyncpg>=0.30.0
+Requires-Dist: bip-utils>=2.9.3
+Requires-Dist: celery-types>=0.23.0
+Requires-Dist: celery[redis]>=5.5.2
+Requires-Dist: cryptography>=44.0.3
+Requires-Dist: fastapi[standard]>=0.115.12
+Requires-Dist: httpx>=0.28.1
+Requires-Dist: nest-asyncio>=1.6.0
+Requires-Dist: passlib[bcrypt]>=1.7.4
+Requires-Dist: pydantic[email]>=2.11.4
+Requires-Dist: python-dotenv>=1.1.0
+Requires-Dist: python-jose[cryptography]>=3.4.0
+Requires-Dist: python-multipart>=0.0.20
+Requires-Dist: slowapi>=0.1.9
+Requires-Dist: sqlmodel>=0.0.24
+Requires-Dist: uvicorn>=0.34.2
+Requires-Dist: web3>=7.11.1
+Provides-Extra: test
+Requires-Dist: pytest>=7.0.0; extra == "test"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "test"
+Requires-Dist: httpx>=0.28.1; extra == "test"
+Requires-Dist: pytest-cov>=4.0.0; extra == "test"
+
+# Crypto Payment System
+
+This project is a Crypto Payment System API built with FastAPI and Etherscan API. It allows creates wallets for users to make transactions to, submit transactions, and monitor transaction statuses.
+It only supports Ethereum at the moment. The project uses uv for fast and reliable Python package management.
+
+## Features
+
+- User registration and authentication
+- Wallet creation and management
+- Transaction submission and monitoring
+- Rate limiting to prevent abuse
+- CORS support for frontend integration
+
+## Requirements
+
+- Python 3.12+
+- PostgreSQL
+- Redis
+- Docker (for containerized deployment)
+- uv (Python package manager)
+
+---
+
+# Architecture Diagrams
+
+## Component Diagram
+
+![Component Diagram](docs/uml/component_diagram.svg)
+
+---
+
+## Sequence Diagrams
+
+### 1. User Registration
+
+![User Registration](docs/uml/user_registration.svg)
+
+---
+
+### 2. Wallet Creation
+
+![Wallet Creation](docs/uml/wallet_creation.svg)
+
+---
+
+### 3. Transaction Submission
+
+![Transaction Submission](docs/uml/transaction_submission.svg)
+
+---
+
+### 4. Transaction Monitoring (Celery Task)
+
+![Transaction Monitoring](docs/uml/transaction_monitoring.svg)
+
+---
+
+## Class Diagram
+
+![Class Diagram](docs/uml/class_diagram.svg)
+
+---
+
+## Setup
+
+### Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```
+DATABASE_URL=postgresql+asyncpg://user:password@db/crypto_payments
+MNEMONIC=your_mnemonic_seed_phrase
+CELERY_BROKER_URL=redis://redis:6379/0
+CELERY_RESULT_BACKEND=redis://redis:6379/0
+ETHERSCAN_API_KEY=your_etherscan_api_key
+```
+
+### Docker
+
+To run the project using Docker, use the following commands:
+
+```sh
+docker compose up --build
+```
+
+This will start the PostgreSQL, Redis, FastAPI, and Celery services. The application runs as a non-root user for security, and uses uv for fast Python package management.
+
+### Manual Setup
+
+1. Install uv (if not already installed):
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Install dependencies using uv:
+
+```sh
+uv sync
+```
+
+3. Run the FastAPI application:
+
+```sh
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+4. Start the Celery worker and beat:
+
+```sh
+uv run celery -A app.celery_app.celery worker --loglevel=info
+uv run celery -A app.celery_app.celery beat --loglevel=info
+```
+
+## Usage
+
+### API Endpoints
+
+- `POST /users/`: Register a new user
+- `POST /auth/login`: Login and obtain a token
+- `POST /payments/initiate`: Initiate a new wallet
+- `POST /payments/submit`: Submit a transaction
+- `GET /payments/transactions/{transaction_id}`: Get transaction status
+- `GET /payments/my-wallets`: Get all wallets for the current user
+
+### Running Tests
+
+To run the tests, use the following command:
+
+```sh
+pytest
+```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.

@@ -1,5 +1,5 @@
-[ ] Retrieve from all wallets
+[x] Retrieve from all wallets
 [ ] Add more endpoints to improve useability
 [ ] Add support for other chains
-[ ] Write tests
-[ ] Make async
+[x] Write tests
+[x] Make async
