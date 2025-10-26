@@ -20,8 +20,12 @@ if config.config_file_name is not None:
 # Load environment variables
 load_dotenv()
 
-# Set SQLAlchemy URL
-config.set_main_option('sqlalchemy.url', os.getenv("DATABASE_URL", ""))
+# Set SQLAlchemy URL - use sync driver for Alembic
+database_url = os.getenv("DATABASE_URL", "")
+if database_url.startswith("postgresql+asyncpg://"):
+    # Convert asyncpg URL to psycopg2 for synchronous migrations
+    database_url = database_url.replace("postgresql+asyncpg://", "postgresql://")
+config.set_main_option('sqlalchemy.url', database_url)
 
 # Import models
 from app.models import User, Wallet, Transaction, Log # type:ignore

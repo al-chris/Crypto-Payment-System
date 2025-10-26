@@ -10,13 +10,14 @@ WORKDIR /app
 RUN useradd --create-home --shell /bin/bash app
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y build-essential
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements
 COPY requirements.txt .
-
-# Remove Windows-specific packages that aren't compatible with Linux
-RUN sed -i '/pywin32/d' requirements.txt
 
 # Install Python dependencies using uv
 RUN uv pip install --system --no-cache-dir -r requirements.txt

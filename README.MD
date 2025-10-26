@@ -99,13 +99,28 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 ```
 
-3. Run the FastAPI application:
+3. To generate or update `requirements.txt` (for Docker builds):
+
+```sh
+uv pip freeze > requirements.txt
+```
+Then, add ` ; sys_platform == 'win32'` after the `pywin32` line in `requirements.txt` if it exists.
+so, it goes from something like 
+```
+pywin32==310 
+```
+to
+```
+pywin32==310 ; sys_platform == 'win32'
+```
+
+4. Run the FastAPI application:
 
 ```sh
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-4. Start the Celery worker and beat:
+5. Start the Celery worker and beat:
 
 ```sh
 uv run celery -A app.celery_app.celery worker --loglevel=info
